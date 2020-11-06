@@ -16,7 +16,7 @@ def update(request):
             context = {'updateform': updateform}
         except:
             messages.error(request,"Login Required to update")
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/accounts/")
     else:
         updateformdata = Updateform(request.POST)
         username = request.user.username
@@ -26,7 +26,6 @@ def update(request):
         profileimage = request.FILES['profileimage']
         phoneno = updateformdata.data['phoneno']
         email = updateformdata.data['email']
-        print(username,email,User.objects.filter(email=email,username=username),User.objects.filter(email=email,username=username).exists())
         if not User.objects.filter(email=oldemail,username=username).exists():
             user=User.objects.get(username=username,email=oldemail)
             user.phoneno=phoneno
@@ -34,6 +33,7 @@ def update(request):
             user.dateofbirth=dateofbirth
             user.profileimage=profileimage
             user.save()
+            login_user(request,user)
             messages.info(request, "User updated")
             user = User.objects.get(username=username)
             context={'user':user}
@@ -45,6 +45,7 @@ def update(request):
                 user.dateofbirth = dateofbirth
                 user.profileimage = profileimage
                 user.save()
+                login_user(request,user)
                 messages.info(request, "User data updated  successfully")
 
             else:
@@ -119,11 +120,11 @@ def signup(request):
             else:
                 messages.error(request, "email already exists")
                 context = {"user": None}
-                return HttpResponseRedirect ('/signup')
+                return HttpResponseRedirect ('/accounts/signup')
         else:
             messages.error(request,"username already exists")
             context={"user":None}
-            return HttpResponseRedirect('/signup')
+            return HttpResponseRedirect('/accounts/signup')
         loginform = Loginform()
         context={'loginform' :loginform}
     else:

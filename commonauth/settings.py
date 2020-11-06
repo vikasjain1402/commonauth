@@ -18,9 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
+import os
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$vn4p2+gi+#xe+4o_g22x@es45l))sglqq2@^paycunl#7(gfj'
+SECRET_KEY = os.environ["DJANGO_COMMONAUTH"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -118,25 +118,31 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-import os
+
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL='accounts.user'
 MEDIA_URL="/media/"
-MEDIA_ROOT=os.path.join(BASE_DIR,"media/profileimg")
-EMAIL_HOST_USER=''
-EMAIL_HOST_PASSWORD='8@Sambhav'
+MEDIA_ROOT=os.path.join(BASE_DIR,"")
+
+#EMAIL_HOST_USER=''
+#EMAIL_HOST_PASSWORD=os.environ["GMAIL_PASSWORD"]
 EMAIL_USE_TLS=True
+
 
 
 EMAIL_ACTIVE_FIELD = 'is_active'
 EMAIL_SERVER = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_ADDRESS = 'coronastatsindialive@gmail.com'
-EMAIL_FROM_ADDRESS = 'coronastatsindialive@gmail.com'
-EMAIL_PASSWORD = '8@Sambhav' # os.environ['password_key'] suggested
-EMAIL_MAIL_SUBJECT = 'Confirm your email'
-EMAIL_MAIL_HTML = 'mail_body.html'
-EMAIL_MAIL_PLAIN = 'mail_body.txt'
+
+EMAIL_ADDRESS =os.environ["GMAIL_USERNAME"]
+EMAIL_FROM_ADDRESS=os.environ["GMAIL_USERNAME"]
+
+EMAIL_PASSWORD=os.environ["GMAIL_PASSWORD"]
+
+EMAIL_MAIL_SUBJECT="Confirm Your Email"
+EMAIL_MAIL_HTML="mail_body.html"
+EMAIL_MAIL_PLAIN='mail_body.txt'
+
 EMAIL_PAGE_TEMPLATE = 'confirm_template.html'
 EMAIL_PAGE_DOMAIN = 'http://localhost:8000/'
