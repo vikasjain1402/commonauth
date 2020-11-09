@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block 'body1' %}
+<form method="POST" action="/" enctype="multipart/form-data">
+  {% csrf_token %}
+     <div class="input-group mb-3">
+
+            {% if imageuploadform %}
+            {{imageuploadform.as_ul}}
+            <input type="submit" name="submit">
+            {% endif %}
+
+</div>
+
+
+
+</form>
+
+
+
+{% endblock %}
