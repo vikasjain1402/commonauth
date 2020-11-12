@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
-    'django_email_verification'
+    'django_email_verification',
+    'pixel'
 ]
 
 MIDDLEWARE = [
@@ -122,14 +123,17 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL='accounts.user'
-MEDIA_URL="/media/"
+MEDIA_URL=""
 MEDIA_ROOT=os.path.join(BASE_DIR,"")
 
-#EMAIL_HOST_USER=''
-#EMAIL_HOST_PASSWORD=os.environ["GMAIL_PASSWORD"]
+
+#For sendding mails
+EMAIL_HOST_USER=os.environ['GMAIL_USERNAME']
+EMAIL_HOST_PASSWORD=os.environ["GMAIL_PASSWORD"]
 EMAIL_USE_TLS=True
+EMAIL_HOST='smtp.gmail.com'
 
-
+#for user authentification
 
 EMAIL_ACTIVE_FIELD = 'is_active'
 EMAIL_SERVER = 'smtp.gmail.com'

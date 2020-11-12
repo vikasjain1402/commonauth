@@ -120,11 +120,11 @@ def signup(request):
             else:
                 messages.error(request, "email already exists")
                 context = {"user": None}
-                return HttpResponseRedirect ('/accounts/signup')
+                return HttpResponseRedirect ('/accounts/views/signup/')
         else:
             messages.error(request,"username already exists")
             context={"user":None}
-            return HttpResponseRedirect('/accounts/signup')
+            return HttpResponseRedirect('/accounts/views/signup')
         loginform = Loginform()
         context={'loginform' :loginform}
     else:

@@ -6,15 +6,14 @@
      <div class="input-group mb-3">
 
             {% if imageuploadform %}
-            {{imageuploadform.as_ul}}
+            {{imageuploadform.as_table}}
             <input type="submit" name="submit">
             {% endif %}
 
 </div>
 
-
-
 </form>
+<img src="{{task.image.url}}" style='width:300px'>
 
 
 
