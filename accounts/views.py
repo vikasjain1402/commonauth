@@ -18,7 +18,12 @@ def update(request):
             messages.error(request,"Login Required to update")
             return HttpResponseRedirect("/accounts/")
     else:
+
         updateformdata = Updateform(request.POST)
+        if updateformdata.is_valid():
+            print("valid form data")
+        else:
+            print("Invlaid form data")    
         username = request.user.username
         oldemail=request.user.email
         password = updateformdata.data['password']
@@ -120,11 +125,11 @@ def signup(request):
             else:
                 messages.error(request, "email already exists")
                 context = {"user": None}
-                return HttpResponseRedirect ('/accounts/views/signup/')
+                return HttpResponseRedirect ('/accounts/signup/')
         else:
             messages.error(request,"username already exists")
             context={"user":None}
-            return HttpResponseRedirect('/accounts/views/signup')
+            return HttpResponseRedirect('/accounts/signup')
         loginform = Loginform()
         context={'loginform' :loginform}
     else:
