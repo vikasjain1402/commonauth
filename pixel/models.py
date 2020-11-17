@@ -7,3 +7,6 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="media/tasks")
     requiredSize = models.IntegerField(default=10000)
+
+    def __str__(self):
+        return str(self.user.username)+":"+str(self.requiredSize)

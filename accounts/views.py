@@ -93,6 +93,7 @@ def login(request):
 
 
 def logout(request):
+    print("logout")
     logout_user(request)
     loginform = Loginform()
     context = {'loginform': loginform}
@@ -111,11 +112,10 @@ def signup(request):
         user=User.objects.filter(username=username).exists()
         if not user :
             if not User.objects.filter(email=email).exists():
-
                 user = get_user_model().objects.create(username=username,password=password,email=email,phoneno=phoneno,profileimage=profileimage,dateofbirth=dateofbirth,is_active=False)
                 user.set_password(password)
                 sendConfirm(user)
-                logout(request)
+                logout_user(request)
                 messages.info(request,"User created successfully ,please check your mail tp confirm")
             else:
                 messages.error(request, "email already exists")
@@ -128,7 +128,8 @@ def signup(request):
         loginform = Loginform()
         context={'loginform' :loginform}
     else:
-        logout(request)
+        print("signup")
+        logout_user(request)
         signupform=Signupform()
         context={'signupform':signupform}
     return render(request,'base.html',context)

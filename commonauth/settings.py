@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'django_email_verification',
-    'pixel'
+    'pixel.apps.PixelConfig'
 ]
 
 MIDDLEWARE = [
@@ -123,7 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL='accounts.user'
-MEDIA_URL=""
+MEDIA_URL="/media/"
 MEDIA_ROOT=os.path.join(BASE_DIR,"")
 
 
