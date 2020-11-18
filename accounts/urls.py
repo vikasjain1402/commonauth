@@ -28,3 +28,6 @@ path("update/",views.update,name="update"),
 path('resendmail/',views.resendmail,name="resentmail")
 
 ]
+
+
+

@@ -10,11 +10,15 @@ import imghdr
 from django.core.mail import EmailMessage
 from commonauth.settings import EMAIL_FROM_ADDRESS, BASE_DIR
 from django.contrib import sessions
+def doaction(*args,**kwargs):
+    
+    pass
+
 
 def home(request):
 
     if request.method == 'POST':
-        image = request.FILES['imageUpload']
+        image = request.FILES['image']
         desired_size = int(request.POST.get("requiredSize", 100_000))
         size = image.size
         if request.user.is_authenticated:
