@@ -10,7 +10,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/",include('accounts.urls')),
     path('email/', include(mail_urls)),
-    path("",include('pixel.urls'))
+    path("",include('pixel.urls')),
+    path("contactus/",include('contactus.urls'))
 ]
-
+#urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

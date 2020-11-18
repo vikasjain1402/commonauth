@@ -121,13 +121,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join( BASE_DIR,"static"),
+]
 
-AUTH_USER_MODEL='accounts.user'
 MEDIA_URL="/media/"
 MEDIA_ROOT=os.path.join(BASE_DIR,"")
 
 
+
+AUTH_USER_MODEL='accounts.user'
 #For sendding mails
+
 EMAIL_HOST_USER=os.environ['GMAIL_USERNAME']
 EMAIL_HOST_PASSWORD=os.environ["GMAIL_PASSWORD"]
 EMAIL_USE_TLS=True
