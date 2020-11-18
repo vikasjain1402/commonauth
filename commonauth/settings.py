@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'django_email_verification',
-    'pixel.apps.PixelConfig'
+    'pixel.apps.PixelConfig',
+    'contactus.apps.ContactusConfig'
 ]
 
 MIDDLEWARE = [

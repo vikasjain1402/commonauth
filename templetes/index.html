@@ -11,7 +11,8 @@
 
   <link rel="stylesheet" type="text/css" href="{% static 'contactus/vendor/bootstrap/css/bootstrap.min.css' %}">
 
-  <link rel="stylesheet" type="text/css" href="{% static 'contactus/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" type="text/css"
+    href="{% static 'contactus/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 
   <link rel="stylesheet" type="text/css" href="{% static 'contactus/vendor/animate/animate.css' %}">
 
@@ -30,25 +31,42 @@
       <div class="contact1-pic js-tilt" data-tilt>
         <img src="{% static 'contactus/images/img-01.png' %}" alt="IMG">
       </div>
-      <form class="contact1-form validate-form">
+      <form class="contact1-form validate-form" method="POST" target="/contactus">
         <span class="contact1-form-title">
           Get in touch
         </span>
+        {% csrf_token  %}
         <div class="wrap-input1 validate-input" data-validate="Name is required">
-          <input class="input1" type="text" name="name" placeholder="Name">
+          <input class="input1" type="text" name="name" placeholder="Name" {% if form.is_bound %}
+            value="{{form.name.value}}" {% endif %}>
           <span class="shadow-input1"></span>
+          {% for err in form.name.errors %}
+          <h6>{{err}}</h6>
+          {% endfor %}
         </div>
         <div class="wrap-input1 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-          <input class="input1" type="text" name="email" placeholder="Email">
+          <input class="input1" type="text" name="email" placeholder="Email" {% if form.is_bound %}
+            value="{{form.email.value}}" {% endif %}>
           <span class="shadow-input1"></span>
+          {% for err in form.email.errors %}
+          <h6>{{err}}</h6>
+          {% endfor %}
         </div>
         <div class="wrap-input1 validate-input" data-validate="Subject is required">
-          <input class="input1" type="text" name="subject" placeholder="Subject">
+          <input class="input1" type="text" name="subject" placeholder="Subject" {% if form.is_bound %}
+            value="{{form.subject.value}}" {% endif %}>
           <span class="shadow-input1"></span>
+          {% for err in form.subject.errors %}
+          <h6>{{err}}</h6>
+          {% endfor %}
         </div>
         <div class="wrap-input1 validate-input" data-validate="Message is required">
-          <textarea class="input1" name="message" placeholder="Message"></textarea>
+          <textarea class="input1" name="message"
+            placeholder="Message">{% if form.is_bound %} {{form.message.value}} {% endif %}</textarea>
           <span class="shadow-input1"></span>
+          {% for err in form.message.errors %}
+          <h8>{{err}}</h8>
+          {% endfor %}
         </div>
         <div class="container-contact1-form-btn">
           <button class="contact1-form-btn">
