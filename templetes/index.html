@@ -26,6 +26,16 @@
 </head>
 
 <body>
+  {% if messages %}
+         {% for message in messages %}
+           <div class="alert alert-warning alert-dismissible fade show" role="error">
+                <strong>{{message.tags}}: </strong> {{message}}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                 </button>
+            </div>
+         {% endfor %}
+      {% endif %}
   <div class="contact1">
     <div class="container-contact1">
       <div class="contact1-pic js-tilt" data-tilt>
