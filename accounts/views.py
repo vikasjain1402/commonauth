@@ -5,8 +5,19 @@ from .models import User
 from django.contrib.auth import authenticate,login as login_user,logout as logout_user,get_user_model
 from django_email_verification import sendConfirm
 
-
+def resendmail(request):
+    context={}
+    email=request.GET.get("email")
+    print(email)
+    user=User.objects.get(email=email)
+    sendConfirm(user)
+    context['loginform']=Loginform()
+    return render(request,"base.html",context=context)
 def update(request):
+    if not request.user.is_authenticated:
+        messages.error(request,"user Login required")
+        return  HttpResponseRedirect("/accounts/")
+            
     if request.method=="GET":
         try:
             loginform = Loginform(request.GET)
@@ -19,16 +30,18 @@ def update(request):
             return HttpResponseRedirect("/accounts/")
     else:
 
+
         updateformdata = Updateform(request.POST)
         if updateformdata.is_valid():
             print("valid form data")
         else:
-            print("Invlaid form data")    
+            print("Invlaid form data")  
+            print(updateformdata.errors)  
         username = request.user.username
         oldemail=request.user.email
         password = updateformdata.data['password']
         dateofbirth = updateformdata.data['dateofbirth']
-        profileimage = request.FILES['profileimage']
+        profileimage = request.FILES.get('profileimage',request.user.profileimage)
         phoneno = updateformdata.data['phoneno']
         email = updateformdata.data['email']
         if not User.objects.filter(email=oldemail,username=username).exists():
@@ -74,6 +87,7 @@ def login(request):
         loginform =Loginform(request.POST)
         username=loginform.data['username']
         password=loginform.data['password']
+        
         if  User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.is_active:
@@ -85,6 +99,8 @@ def login(request):
                     messages.info(request, "Password not matching")
             else:
                 messages.info(request, "Please click on actvation link sent on your corresponding mail id")
+                context['resend_mail']=user.email
+                
         else:
             messages.error(request, "Username does not exits")
         loginform = Loginform()
@@ -98,7 +114,6 @@ def login(request):
 
 
 def logout(request):
-    print("logout")
     logout_user(request)
     loginform = Loginform()
     context = {'loginform': loginform}
@@ -114,14 +129,16 @@ def signup(request):
         profileimage=request.FILES['profileimage']
         phoneno=signupformdata.data['phoneno']
         email=signupformdata.data['email']
+        
         user=User.objects.filter(username=username).exists()
         if not user :
             if not User.objects.filter(email=email).exists():
-                user = get_user_model().objects.create(username=username,password=password,email=email,phoneno=phoneno,profileimage=profileimage,dateofbirth=dateofbirth,is_active=False)
+                user = get_user_model().objects.create(username=username,password=password,
+                email=email,phoneno=phoneno,profileimage=profileimage,dateofbirth=dateofbirth,is_active=False)
                 user.set_password(password)
                 sendConfirm(user)
                 logout_user(request)
-                messages.info(request,"User created successfully ,please check your mail tp confirm")
+                messages.info(request,"User created successfully ,please check your mail and click on activation link to activate your account")
             else:
                 messages.error(request, "email already exists")
                 context = {"user": None}
@@ -133,7 +150,7 @@ def signup(request):
         loginform = Loginform()
         context={'loginform' :loginform}
     else:
-        print("signup")
+
         logout_user(request)
         signupform=Signupform()
         context={'signupform':signupform}

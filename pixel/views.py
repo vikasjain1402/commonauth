@@ -49,10 +49,12 @@ def home(request):
                     messages.info(request, "reduced to least possible size")
                     break
             messages.info(request, f"Image Size Reduced to {size}  Bytes from {ori_size}  {ori_pix} ")
-            print(dir())
+        
             try:
-                task = Task.objects.filter(user=request.user).filter(image__icontains=image)[0]
+                
+                task = Task.objects.filter(user=request.user).filter(image__icontains=image.name)[0]
             except Exception as e:
+                
                 messages.error(request,f"error : {e} user :{request.user} ")
 
 
