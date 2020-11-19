@@ -1,3 +1,7 @@
 {
-    "editor.fontSize": 15
+    "editor.fontSize": 15,
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    "files.autoSave": "afterDelay",
 }
+
+

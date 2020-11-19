@@ -1,79 +1,85 @@
-from django.shortcuts import render,HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import messages
-from .forms import Loginform,Signupform,Updateform
+from .forms import Loginform, Signupform, Updateform
 from .models import User
-from django.contrib.auth import authenticate,login as login_user,logout as logout_user,get_user_model
+from django.contrib.auth import authenticate, login as login_user, logout as logout_user, get_user_model
 from django_email_verification import sendConfirm
 
+
 def resendmail(request):
-    context={}
-    email=request.GET.get("email")
+    context = {}
+    email = request.GET.get("email")
     print(email)
-    user=User.objects.get(email=email)
+    user = User.objects.get(email=email)
     sendConfirm(user)
-    context['loginform']=Loginform()
-    return render(request,"base.html",context=context)
+    context['loginform'] = Loginform()
+    return render(request, "base.html", context=context)
+
+
 def update(request):
     if not request.user.is_authenticated:
-        messages.error(request,"user Login required")
-        return  HttpResponseRedirect("/accounts/")
-            
-    if request.method=="GET":
+        messages.error(request, "user Login required")
+        return HttpResponseRedirect("/accounts/")
+
+    if request.method == "GET":
         try:
             loginform = Loginform(request.GET)
             email = loginform.data['email']
-            user=User.objects.get(email=email)
-            updateform = Updateform( initial={'username':user.username,'password':user.password,'phoneno':user.phoneno,'email':user.email,'profileimage':user.profileimage})
+            user = User.objects.get(email=email)
+            updateform = Updateform(initial={'username': user.username, 'password': user.password,
+                                             'phoneno': user.phoneno, 'email': user.email, 
+                                             'profileimage': user.profileimage})
             context = {'updateform': updateform}
         except:
-            messages.error(request,"Login Required to update")
+            messages.error(request, "Login Required to update")
             return HttpResponseRedirect("/accounts/")
     else:
-
 
         updateformdata = Updateform(request.POST)
         if updateformdata.is_valid():
             print("valid form data")
         else:
-            print("Invlaid form data")  
-            print(updateformdata.errors)  
+            print("Invlaid form data")
+            print(updateformdata.errors)
         username = request.user.username
-        oldemail=request.user.email
+        oldemail = request.user.email
         password = updateformdata.data['password']
         dateofbirth = updateformdata.data['dateofbirth']
-        profileimage = request.FILES.get('profileimage',request.user.profileimage)
+        profileimage = request.FILES.get(
+            'profileimage', request.user.profileimage)
         phoneno = updateformdata.data['phoneno']
         email = updateformdata.data['email']
-        if not User.objects.filter(email=oldemail,username=username).exists():
-            user=User.objects.get(username=username,email=oldemail)
-            user.phoneno=phoneno
+        if not User.objects.filter(email=oldemail, username=username).exists():
+            user = User.objects.get(username=username, email=oldemail)
+            user.phoneno = phoneno
             user.set_password(password)
-            user.dateofbirth=dateofbirth
-            user.profileimage=profileimage
+            user.dateofbirth = dateofbirth
+            user.profileimage = profileimage
             user.save()
-            login_user(request,user)
+            login_user(request, user)
             messages.info(request, "User updated")
             user = User.objects.get(username=username)
-            context={'user':user}
+            context = {'user': user}
         else:
             user = User.objects.get(username=username)
-            if email==user.email:
+            if email == user.email:
                 user.phoneno = phoneno
                 user.set_password(password)
                 user.dateofbirth = dateofbirth
                 user.profileimage = profileimage
                 user.save()
-                login_user(request,user)
+                login_user(request, user)
                 messages.info(request, "User data updated  successfully")
 
             else:
                 if User.objects.filter(email=email).exists():
-                    messages.error(request,"Email already registered")
+                    messages.error(request, "Email already registered")
                 else:
-                    user.email=email
+                    user.email = email
                     user.save()
                     sendConfirm(user)
-                    messages.error(request, "Email sent for varification please click on activation link")
+                    messages.error(
+                        request, "Email sent for varification please click on activation link")
 
             context = {'user': request.user}
 
@@ -81,26 +87,27 @@ def update(request):
 
 
 def login(request):
-    context={}
-    if request.method=="POST":
+    context = {}
+    if request.method == "POST":
 
-        loginform =Loginform(request.POST)
-        username=loginform.data['username']
-        password=loginform.data['password']
-        
-        if  User.objects.filter(username=username).exists():
+        loginform = Loginform(request.POST)
+        username = loginform.data['username']
+        password = loginform.data['password']
+
+        if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.is_active:
-                if authenticate(username=username,password=password):
+                if authenticate(username=username, password=password):
                     login_user(request, user)
                     messages.info(request, "Loged in successfully")
-                    context['user'] =user
+                    context['user'] = user
                 else:
                     messages.info(request, "Password not matching")
             else:
-                messages.info(request, "Please click on actvation link sent on your corresponding mail id")
-                context['resend_mail']=user.email
-                
+                messages.info(
+                    request, "Please click on actvation link sent on your corresponding mail id")
+                context['resend_mail'] = user.email
+
         else:
             messages.error(request, "Username does not exits")
         loginform = Loginform()
@@ -108,9 +115,9 @@ def login(request):
         return render(request, 'base.html', context)
 
     else:
-        loginform=Loginform()
-        context={'loginform':loginform}
-    return render(request,'base.html',context)
+        loginform = Loginform()
+        context = {'loginform': loginform}
+    return render(request, 'base.html', context)
 
 
 def logout(request):
@@ -121,37 +128,38 @@ def logout(request):
 
 
 def signup(request):
-    if request.method=='POST':
-        signupformdata=Signupform(request.POST)
-        username=signupformdata.data['username']
-        password=signupformdata.data['password']
-        dateofbirth=signupformdata.data['dateofbirth']
-        profileimage=request.FILES['profileimage']
-        phoneno=signupformdata.data['phoneno']
-        email=signupformdata.data['email']
-        
-        user=User.objects.filter(username=username).exists()
-        if not user :
+    if request.method == 'POST':
+        signupformdata = Signupform(request.POST)
+        username = signupformdata.data['username']
+        password = signupformdata.data['password']
+        dateofbirth = signupformdata.data['dateofbirth']
+        profileimage = request.FILES['profileimage']
+        phoneno = signupformdata.data['phoneno']
+        email = signupformdata.data['email']
+
+        user = User.objects.filter(username=username).exists()
+        if not user:
             if not User.objects.filter(email=email).exists():
-                user = get_user_model().objects.create(username=username,password=password,
-                email=email,phoneno=phoneno,profileimage=profileimage,dateofbirth=dateofbirth,is_active=False)
+                user = get_user_model().objects.create(username=username, password=password,
+                                                       email=email, phoneno=phoneno, profileimage=profileimage, dateofbirth=dateofbirth, is_active=False)
                 user.set_password(password)
                 sendConfirm(user)
                 logout_user(request)
-                messages.info(request,"User created successfully ,please check your mail and click on activation link to activate your account")
+                messages.info(
+                    request, "User created successfully ,please check your mail and click on activation link to activate your account")
             else:
                 messages.error(request, "email already exists")
                 context = {"user": None}
-                return HttpResponseRedirect ('/accounts/signup/')
+                return HttpResponseRedirect('/accounts/signup/')
         else:
-            messages.error(request,"username already exists")
-            context={"user":None}
+            messages.error(request, "username already exists")
+            context = {"user": None}
             return HttpResponseRedirect('/accounts/signup')
         loginform = Loginform()
-        context={'loginform' :loginform}
+        context = {'loginform': loginform}
     else:
 
         logout_user(request)
-        signupform=Signupform()
-        context={'signupform':signupform}
-    return render(request,'base.html',context)
+        signupform = Signupform()
+        context = {'signupform': signupform}
+    return render(request, 'base.html', context)
